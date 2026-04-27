@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules # Evita pisar los módulos del contenedor con los locales
+    environment:
+      # Esta variable es clave para que Vite detecte los cambios en los archivos
+      # si estás cruzando sistemas de archivos
+      - CHOKIDAR_USEPOLLING=true
