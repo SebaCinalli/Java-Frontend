@@ -18,6 +18,10 @@ function App() {
     setCurrentGame(null);
   };
 
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
@@ -28,10 +32,10 @@ function App() {
         <div className="menu-background"></div>
         <div className="menu-content">
           <div className="menu-header">
-            <h1>🎰 CASINO VIRTUAL 🎰</h1>
+            <h1>CASINO VIRTUAL</h1>
             <p>Bienvenido, {user.nombre}</p>
             <div className="menu-balance">
-              <span>Saldo: $1000.00</span>
+              <span>Saldo: ${Number(user.saldo ?? 0).toFixed(2)}</span>
             </div>
           </div>
 
@@ -40,9 +44,9 @@ function App() {
               className="game-card roulette-card"
               onClick={() => setCurrentGame('roulette')}
             >
-              <div className="game-icon">🎡</div>
+              <div className="game-icon">Ruleta</div>
               <h2>RULETA EUROPEA</h2>
-              <p>Apuesta a números y colores</p>
+              <p>Apuesta a numeros y colores</p>
               <div className="game-stats">
                 <span>RTP: 97.3%</span>
               </div>
@@ -53,7 +57,7 @@ function App() {
               className="game-card blackjack-card"
               onClick={() => setCurrentGame('blackjack')}
             >
-              <div className="game-icon">♠️</div>
+              <div className="game-icon">Blackjack</div>
               <h2>BLACKJACK</h2>
               <p>Supera al dealer sin pasarte de 21</p>
               <div className="game-stats">
@@ -67,7 +71,7 @@ function App() {
             className="btn btn-danger btn-lg logout-btn"
             onClick={handleLogout}
           >
-            🚪 CERRAR SESIÓN
+            CERRAR SESION
           </button>
         </div>
       </div>
@@ -75,12 +79,26 @@ function App() {
   }
 
   if (currentGame === 'roulette') {
-    return <Roulette user={user} onLogout={() => setCurrentGame('menu')} />;
+    return (
+      <Roulette
+        user={user}
+        onUserUpdate={handleUserUpdate}
+        onLogout={() => setCurrentGame('menu')}
+      />
+    );
   }
 
   if (currentGame === 'blackjack') {
-    return <Blackjack user={user} onLogout={() => setCurrentGame('menu')} />;
+    return (
+      <Blackjack
+        user={user}
+        onUserUpdate={handleUserUpdate}
+        onLogout={() => setCurrentGame('menu')}
+      />
+    );
   }
+
+  return null;
 }
 
 export default App;
