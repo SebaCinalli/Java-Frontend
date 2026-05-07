@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../styles/Login.css';
+import { loginUser } from '../api/backend';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -7,21 +8,17 @@ export default function Login({ onLogin }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
-    // Validación básica
-    if (email === 'cliente@gmail.com' && password === 'cliente123') {
-      setError(null);
-      setTimeout(() => {
-        onLogin({ email, nombre: 'Lucio' });
-        setLoading(false);
-      }, 500);
-    } else {
-      setError(
-        'Credenciales incorrectas. Intenta con cliente@gmail.com / cliente123',
-      );
+    try {
+      const user = await loginUser(email, password);
+      onLogin(user);
+    } catch (err) {
+      setError(err.message || 'Credenciales incorrectas');
+    } finally {
       setLoading(false);
     }
   };
@@ -90,7 +87,7 @@ export default function Login({ onLogin }) {
         </form>
 
         <div className="login-footer">
-          <p className="text-muted">Demo: cliente@gmail.com / cliente123</p>
+          <p className="text-muted">Autenticación contra backend</p>
           <div className="games-preview">
             <span className="badge badge-game">🎡 Ruleta</span>
             <span className="badge badge-game">♠️ Blackjack</span>
