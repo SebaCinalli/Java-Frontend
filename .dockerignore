@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.idea
+.vscode
+.DS_Store
+*.log
+*.local
+.pnpm-store
+coverage
+package-lock.json
+yarn.lock

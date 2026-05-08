@@ -13,8 +13,10 @@ COPY package.json pnpm-lock.yaml ./
 # Instalamos todo
 RUN pnpm install --frozen-lockfile
 
-# Copiamos el resto del código
-COPY . .
+# Copiamos solo lo que Vite necesita para arrancar
+COPY index.html vite.config.js eslint.config.js .
+COPY src ./src
+COPY public ./public
 
 # Exponemos el puerto por defecto de Vite
 EXPOSE 5173
