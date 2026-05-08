@@ -1,6 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
 import '../styles/Roulette.css';
-import { getJuegos, getMesasByJuego, getUserById, playRoulette } from '../api/backend';
+
+const BASE_URL = 'http://localhost:8080/api';
+
+async function getJuegos() {
+  const r = await axios.get(`${BASE_URL}/juegos`);
+  return r.data;
+}
+
+async function getMesasByJuego(juegoId) {
+  const r = await axios.get(`${BASE_URL}/mesas/juego/${juegoId}`);
+  return r.data;
+}
+
+async function getUserById(actorId) {
+  const r = await axios.get(`${BASE_URL}/usuarios/${actorId}`);
+  return r.data;
+}
+
+async function playRoulette(actorId, payload) {
+  const r = await axios.post(`${BASE_URL}/apuestas/ruleta`, payload, { headers: { 'X-Actor-Id': String(actorId) } });
+  return r.data;
+}
 
 export default function Roulette({ user, onUserUpdate, onLogout }) {
   const [bet, setBet] = useState(10);

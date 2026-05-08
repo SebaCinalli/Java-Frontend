@@ -4,11 +4,14 @@ FROM node:24-alpine
 # Carpeta de laburo adentro del contenedor
 WORKDIR /app
 
+# Habilitamos pnpm via Corepack
+RUN corepack enable
+
 # Copiar los archivos de dependencias primero (para cachear)
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Instalamos todo
-RUN npm install
+RUN pnpm install --frozen-lockfile
 
 # Copiamos el resto del código
 COPY . .
@@ -17,4 +20,4 @@ COPY . .
 EXPOSE 5173
 
 # Arrancamos el server. El --host es clave para que exponga a la red del contenedor
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["pnpm", "run", "dev", "--", "--host"]

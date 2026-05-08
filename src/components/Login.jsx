@@ -1,12 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/Login.css';
-import { loginUser } from '../api/backend';
+import { useUser } from '../context/usercontext';
 
-export default function Login({ onLogin }) {
+const API_BASE_URL = 'http://localhost:8080/api';
+
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,10 +20,17 @@ export default function Login({ onLogin }) {
     setError(null);
 
     try {
-      const user = await loginUser(email, password);
-      onLogin(user);
+      const resp = await axios.post(
+        `${API_BASE_URL}/usuarios/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+      const user = resp.data?.user ?? resp.data;
+      if (!user) throw new Error('Respuesta inválida del servidor');
+      login(user);
+      navigate('/');
     } catch (err) {
-      setError(err.message || 'Credenciales incorrectas');
+      setError(err?.response?.data?.message || err.message || 'Credenciales incorrectas');
     } finally {
       setLoading(false);
     }
